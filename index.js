@@ -9,7 +9,13 @@ import { UserRouter } from './componets/route.js';
 
 const app=express()
 app.use(express.json())
-app.use(cors())
+app.use(cors(
+    {
+        origin: 'https://client-login-and-signup-mz1bcybaq.vercel.app/', // Replace with your frontend URL
+        credentials: true, 
+    }
+))
+app.options('*', cors());
 app.use(cookieParser())
 app.use('/',UserRouter)
 
