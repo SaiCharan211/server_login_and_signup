@@ -6,7 +6,7 @@ const router =express.Router()
 import jwt from "jsonwebtoken"
 import nodemailer  from 'nodemailer'
 
-router.post('/signup',async (req,res)=>{
+router.post('/',async (req,res)=>{
     const {username,email,password}=req.body;
     const user=await UserModel.findOne({email})
     if(user){
