@@ -9,6 +9,7 @@ import nodemailer  from 'nodemailer'
 
 router.use(cors())
 router.post('/signup',async (req,res)=>{
+  res.setHeader("Access-Control-Allow-Origin", "*")
     const {username,email,password}=req.body;
     const user=await UserModel.findOne({email})
     if(user){
