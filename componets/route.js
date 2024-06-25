@@ -131,6 +131,15 @@ const verifyUser=async (req,res,next)=>{
   }
 } 
 
+router.get('/',async(req,res)=>{
+  try{
+    const data=await UserModel.find()
+    res.json(data)
+    console.log(data)
+}catch(err){
+    res.send(err)
+}
+})
 router.get('/verify',verifyUser, (req,res)=>{
   return res.json({status:true, message:'authorized'})
 })
