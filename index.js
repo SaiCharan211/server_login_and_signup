@@ -9,12 +9,7 @@ import { UserRouter } from './componets/route.js';
 
 const app=express()
 app.use(express.json())
-app.use(cors(
-    {
-        origin:["https://frontend-jl452q8oz-poosalasaicharan123-gmailcoms-projects.vercel.app/"],
-        credentials:true
-    }
-))
+app.use(cors())
 app.use(cookieParser())
 app.use('/',UserRouter)
 
