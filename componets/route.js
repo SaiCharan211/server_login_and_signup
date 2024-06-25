@@ -1,11 +1,13 @@
 import express from 'express'
 import bcryt from 'bcrypt'
 import UserModel from '../componets/model.js'
+import cors from 'cors'
 
 const router =express.Router()
 import jwt from "jsonwebtoken"
 import nodemailer  from 'nodemailer'
 
+router.use(cors())
 router.post('/signup',async (req,res)=>{
     const {username,email,password}=req.body;
     const user=await UserModel.findOne({email})
