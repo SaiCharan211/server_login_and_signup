@@ -130,7 +130,7 @@ const verifyUser=async (req,res,next)=>{
     return res.json(err)
   }
 } 
-
+//RESPONSE reference
 router.get('/',async(req,res)=>{
   try{
     const data=await UserModel.find()
@@ -140,6 +140,17 @@ router.get('/',async(req,res)=>{
     res.send(err)
 }
 })
+router.get('/login',(req,res)=>{
+  res.send("Login Route")
+})
+router.get('/signup',(req,res)=>{
+  res.send("signup Route")
+})
+
+
+
+
+
 router.get('/verify',verifyUser, (req,res)=>{
   return res.json({status:true, message:'authorized'})
 })
