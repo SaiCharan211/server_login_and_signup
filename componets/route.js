@@ -1,15 +1,12 @@
 import express from 'express'
 import bcryt from 'bcrypt'
 import UserModel from '../componets/model.js'
-import cors from 'cors'
 
 const router =express.Router()
 import jwt from "jsonwebtoken"
 import nodemailer  from 'nodemailer'
 
-router.use(cors())
 router.post('/signup',async (req,res)=>{
-  //res.setHeader("Access-Control-Allow-Origin", "*")
     const {username,email,password}=req.body;
     const user=await UserModel.findOne({email})
     if(user){
@@ -18,8 +15,9 @@ router.post('/signup',async (req,res)=>{
     const hashpassword =await bcryt.hash(password,10)
     if(username==="" || email==="" || password ===""){
       return res.json({status:false, message:"please fill all the fields"})
-    }
-    else{
+      
+      
+    }else{
       const newUser =new UserModel({ 
         username,
         email,
@@ -27,7 +25,8 @@ router.post('/signup',async (req,res)=>{
       })
       await newUser.save()
       return res.json({status:true,message:"record registed"})
-    
+      
+     
     }
        
 })
@@ -131,17 +130,6 @@ const verifyUser=async (req,res,next)=>{
     return res.json(err)
   }
 } 
-
-router.get('/data',async(req,res)=>{
-  try{
-      const data=await UserModel.find()
-      res.json(data)
-      console.log(data)
-  }catch(err){
-      res.send(err)
-  }
-})
-
 
 router.get('/verify',verifyUser, (req,res)=>{
   return res.json({status:true, message:'authorized'})

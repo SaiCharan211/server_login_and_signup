@@ -9,20 +9,16 @@ import { UserRouter } from './componets/route.js';
 
 const app=express()
 app.use(express.json())
-
-
-const corsOptions ={
-    origin:'https://client-login-and-signup.vercel.app/', 
-    credentials:true,            //access-control-allow-credentials:true
-    optionSuccessStatus:200
-}
-app.use(cors(corsOptions));
-
+app.use(cors(
+    {
+        origin:["http://localhost:5173"],
+        credentials:true
+    }
+))
 app.use(cookieParser())
 app.use('/auth',UserRouter)
 
-//mongoose.connect("mongodb://localhost:27017/authentication")
-mongoose.connect(process.env.MONGO_URL)
+mongoose.connect("mongodb://localhost:27017/authentication")
 
 app.listen(process.env.PORT,()=>{
     console.log('Server is running')
