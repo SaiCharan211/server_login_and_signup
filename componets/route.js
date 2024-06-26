@@ -84,15 +84,17 @@ router.post('/forgot-password',async(req,res)=>{
     
     transporter.sendMail(mailOptions, function(error, info){
       if (error) {
-        return res.json({message:"error sending mail",error:error})
+        console.error('Error sending email:', error);
+        res.status(500).json({ message: 'Failed to send reset email' });
       } else {
-        console.log('Email sent:'+info.response)
+        console.log('Email sent:',info.response)
         return res.json({status:true,message:"email sent"})
       }
     });
 
   }catch(err){
-    console.log(err)
+    console.error('Error handling forgot password request:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 })
 
