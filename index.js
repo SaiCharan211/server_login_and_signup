@@ -11,26 +11,25 @@ const app=express()
 app.use(express.json())
 
 const corsOptions={
-    origin:"http://localhost:5173/",
+    origin:"http://localhost:5173",
     credentials:true
 }
 app.use(cors(corsOptions))
-//app.use(cors())
-/*app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-    next();
-});*/
-app.options('*', cors(corsOptions)); // This will handle preflight requests.
+
+app.options('*', cors()); // This will handle preflight requests.
 
 app.use(cookieParser())
 app.use('/',UserRouter)
 
 //mongoose.connect("mongodb://localhost:27017/authentication")
-mongoose.connect(process.env.MONGO_URL)
-
+//mongoose.connect(process.env.MONGO_URL)
+mongoose.connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('Failed to connect to MongoDB', err));
+  
 app.listen(process.env.PORT,()=>{
     console.log('Server is running')
 })
