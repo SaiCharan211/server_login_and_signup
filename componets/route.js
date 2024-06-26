@@ -97,7 +97,7 @@ router.post('/forgot-password',async(req,res)=>{
 })
 
 //Reset Password
-router.post('/reset-password/:token',async (req,res)=>{
+router.post('/reset-password',async (req,res)=>{
   const {token}=req.params;
   const {password}=req.body;
   
