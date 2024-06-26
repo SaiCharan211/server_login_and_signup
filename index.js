@@ -41,13 +41,6 @@ mongoose.connect(process.env.MONGO_URL, {
 .then(() => console.log('Connected to MongoDB'))
 .catch(err => console.error('Failed to connect to MongoDB', err));
 
-const userSchema = new mongoose.Schema({
-  email: String,
-  password: String,
-});
-
-const User = mongoose.model('User', userSchema);
-
 
 
 app.listen(process.env.PORT, () => {
