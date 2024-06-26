@@ -19,10 +19,7 @@ app.use('/',UserRouter)
 
 //mongoose.connect("mongodb://localhost:27017/authentication")
 //mongoose.connect(process.env.MONGO_URL)
-mongoose.connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
+mongoose.connect(process.env.MONGO_URL)
 app.listen(process.env.PORT,()=>{
     console.log('Server is running')
 })
