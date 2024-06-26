@@ -99,22 +99,8 @@ router.post('/forgot-password',async(req,res)=>{
 })
 
 //Reset Password
-router.post('/reset-password', async (req, res) => {
-  const { token, password } = req.body;
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    await User.findByIdAndUpdate(decoded.id, { password: hashedPassword });
-
-    res.status(200).json({ status: true, message: 'Password reset successfully' });
-  } catch (error) {
-    res.status(400).json({ status: false, message: 'Invalid or expired token' });
-  }
-});
-
-/* router.post('/reset-password',async (req,res)=>{
+ router.post('/reset-password',async (req,res)=>{
   const {token}=req.params;
   const {password}=req.body;
   
@@ -130,7 +116,7 @@ router.post('/reset-password', async (req, res) => {
   }catch(err){
      return res.json(err)
   }
-})*/ 
+}) 
 
 
 //Verify Home
