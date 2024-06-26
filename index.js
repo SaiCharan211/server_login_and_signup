@@ -8,11 +8,15 @@ dotenv.config()
 import { UserRouter } from './componets/route.js';
 
 const app=express()
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json())
 app.use(cors(
     {
-        origin:["http://localhost:5173","https://client-login-and-signup.vercel.app"],
-        credentials:true
+        origin:["https://client-login-and-signup.vercel.app"],
+        credentials:true,
+        methods: ['GET', 'POST'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
     }
 ))
 app.use(cookieParser())
