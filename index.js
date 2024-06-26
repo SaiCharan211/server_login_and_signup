@@ -9,7 +9,22 @@ import { UserRouter } from './componets/route.js';
 
 const app=express()
 app.use(express.json())
-app.use(cors())
+
+const corsOptions={
+    origin:"http://localhost:5173/",
+    credentials:true
+}
+app.use(cors(corsOptions))
+//app.use(cors())
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    next();
+});
+app.options('*', cors(corsOptions)); // This will handle preflight requests.
+
 app.use(cookieParser())
 app.use('/',UserRouter)
 
