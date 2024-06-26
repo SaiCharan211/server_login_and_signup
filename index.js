@@ -11,7 +11,7 @@ const app=express()
 app.use(express.json())
 
 app.use(cors({
-    origin: 'https://client-login-and-signup.vercel.app/',
+    origin: 'https://client-login-and-signup-kfeznr3cl.vercel.app/',
     credentials:true
 }))
 app.options('*', cors());
@@ -20,8 +20,7 @@ app.use('/',UserRouter)
 
 
 
-app.use(cors(corsOptions));
-app.options('*', cors());
+
 //mongoose.connect("mongodb://localhost:27017/authentication")
 //mongoose.connect(process.env.MONGO_URL)
 mongoose.connect(process.env.MONGO_URL)
