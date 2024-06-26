@@ -45,7 +45,7 @@ router.post('/login',async (req,res)=>{
     if(!validpassword){
         return res.json({message: "password is incorrect"})
     }
-    const token=jwt.sign({username:user.username}, process.env.KEY, {expiresIn: "12m"})
+    const token=jwt.sign({username:user.username}, process.env.KEY, {expiresIn: "5m"})
     //console.log(token)
     res.cookie('token',token,{httpOnly:true, maxAge:2592000000})
     return res.json({status: true, message:"login successfull"})
@@ -64,7 +64,7 @@ router.post('/forgot-password',async(req,res)=>{
      if(!user){
       return res.json({message:"user not registered"})
      }
-     const token=jwt.sign({id:user._id},process.env.KEY,{expiresIn: "12m"})
+     const token=jwt.sign({id:user._id},process.env.KEY,{expiresIn: "5m"})
      
      var transporter = nodemailer.createTransport({
       service: 'gmail',
