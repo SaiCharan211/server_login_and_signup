@@ -141,4 +141,22 @@ router.get('/logout',(req,res)=>{
   
 })
 
+
+
+//get
+
+router.get('/',async(req,res)=>{
+  try{
+    const data=await UserModel.find()
+    res.json(data)
+  }catch(err){
+    res.send(err)
+  }
+})
+
+router.get('/login',(req,res)=>{
+  res.send("login")
+})
+
+
 export {router as UserRouter}
