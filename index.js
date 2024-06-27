@@ -8,21 +8,17 @@ dotenv.config()
 import { UserRouter } from './componets/route.js';
 
 const app=express()
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json())
 app.use(cors(
     {
-        origin:["https://client-login-and-signup.vercel.app"],
-        credentials:true,
-        methods: ['GET', 'POST'],
-        allowedHeaders: ['Content-Type', 'Authorization'],
+        origin:["http://localhost:5173"],
+        credentials:true
     }
 ))
 app.use(cookieParser())
-app.use('/auth',UserRouter)
+app.use('/',UserRouter)
 
-mongoose.connect("mongodb://localhost:27017/authentication")
+mongoose.connect(process.env.MONGO_URL)
 
 app.listen(process.env.PORT,()=>{
     console.log('Server is running')

@@ -84,23 +84,20 @@ router.post('/forgot-password',async(req,res)=>{
     
     transporter.sendMail(mailOptions, function(error, info){
       if (error) {
-        console.error('Error sending email:', error);
-        res.status(500).json({ message: 'Failed to send reset email' });
+        return res.json({message:"error sending mail",error:error})
       } else {
-        console.log('Email sent:',info.response)
+        console.log('Email sent:'+info.response)
         return res.json({status:true,message:"email sent"})
       }
     });
 
   }catch(err){
-    console.error('Error handling forgot password request:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.log(err)
   }
 })
 
 //Reset Password
-
- router.post('/reset-password',async (req,res)=>{
+router.post('/reset-password/:token',async (req,res)=>{
   const {token}=req.params;
   const {password}=req.body;
   
@@ -116,7 +113,7 @@ router.post('/forgot-password',async(req,res)=>{
   }catch(err){
      return res.json(err)
   }
-}) 
+})
 
 
 //Verify Home
@@ -133,26 +130,6 @@ const verifyUser=async (req,res,next)=>{
     return res.json(err)
   }
 } 
-//RESPONSE reference
-router.get('/',async(req,res)=>{
-  try{
-    const data=await UserModel.find()
-    res.json(data)
-    console.log(data)
-}catch(err){
-    res.send(err)
-}
-})
-router.get('/login',(req,res)=>{
-  res.send("Login Route")
-})
-router.get('/signup',(req,res)=>{
-  res.send("signup Route")
-})
-
-
-
-
 
 router.get('/verify',verifyUser, (req,res)=>{
   return res.json({status:true, message:'authorized'})
