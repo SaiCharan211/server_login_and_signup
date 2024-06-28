@@ -118,7 +118,7 @@ router.post('/reset-password/:token', async (req, res) => {
 
     return res.json({ status: true, message: "Password updated successfully", user: newUserdata });
   } catch (error) {
-    console.error(error);
+    console.error('Error during password reset:', error);
     return res.status(500).json({ message: "Internal server error", error: error });
   }
 });
