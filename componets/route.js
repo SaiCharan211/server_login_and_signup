@@ -6,21 +6,20 @@ import nodemailer  from 'nodemailer'
 
 const router = express.Router();
 
-// Register User
 router.post('/', async (req, res) => {
   const { username, email, password } = req.body;
   try {
+    if (!username || !email || !password) {
+      return res.json({ status: false, message: "Please fill all the fields" });
+    }
+
     const user = await UserModel.findOne({ email });
     if (user) {
       return res.json({ status: false, message: "User already existed" });
     }
 
-    if (!username || !email || !password) {
-      return res.json({ status: false, message: "Please fill all the fields" });
-    }
-
     const hashPassword = await bcrypt.hash(password, 10);
-    const newUser = new UserModel({ 
+    const newUser = new UserModel({
       username,
       email,
       password: hashPassword,
@@ -70,9 +69,8 @@ router.post('/forgot-password', async (req, res) => {
       return res.json({ message: "User not registered" });
     }
     const token = jwt.sign({ id: user._id }, process.env.KEY, { expiresIn: "5m" });
-    console.log(`Generated token: ${token}`);
 
-    var transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: process.env.EMAIL,
@@ -80,7 +78,7 @@ router.post('/forgot-password', async (req, res) => {
       }
     });
 
-    var mailOptions = {
+    const mailOptions = {
       from: process.env.EMAIL,
       to: email,
       subject: 'Reset Password',
@@ -102,9 +100,7 @@ router.post('/forgot-password', async (req, res) => {
   }
 });
 
-
 // Reset Password
-// Example backend route using Express
 router.post('/resetPassword/:token', async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
@@ -113,8 +109,6 @@ router.post('/resetPassword/:token', async (req, res) => {
     const decoded = jwt.verify(token, process.env.KEY);
     const id = decoded.id;
 
-    // Update user's password in the database
-    // Example using MongoDB and Mongoose
     const hashedPassword = await bcrypt.hash(password, 10);
     const updatedUser = await UserModel.findByIdAndUpdate(id, { password: hashedPassword }, { new: true });
 
@@ -124,8 +118,6 @@ router.post('/resetPassword/:token', async (req, res) => {
     return res.status(500).json({ status: false, message: 'Error resetting password', error: error.message });
   }
 });
-
-
 
 // Verify User Middleware
 const verifyUser = async (req, res, next) => {
