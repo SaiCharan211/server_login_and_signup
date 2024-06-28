@@ -57,45 +57,49 @@ router.post('/login',async (req,res)=>{
 
 
 //Forgot Password
-router.post('/forgot-password',async(req,res)=>{
-  const {email}=req.body;
-  try{
-      const user=await UserModel.findOne({email})
-     if(!user){
-      return res.json({message:"user not registered"})
-     }
-     const token=jwt.sign({id:user._id},process.env.KEY,{expiresIn: "5m"})
-     
-     var transporter = nodemailer.createTransport({
+router.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      return res.json({ message: "User not registered" });
+    }
+
+    const token = jwt.sign({ id: user._id }, process.env.KEY, { expiresIn: "5m" });
+
+    const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: 'saicharan9071@gmail.com',
         pass: 'wrch oakj fqmg hcfp'
       }
     });
-    //const encodedToken=encodeURIComponent(token).replace(/\./g,"%2E")
-    
-    var mailOptions = {
+
+    const resetURL = `https://client-login-and-signup.vercel.app/resetPassword/${encodeURIComponent(token)}`;
+
+    const mailOptions = {
       from: 'saicharan9071@gmail.com',
-      to:email,
+      to: email,
       subject: 'Reset Password',
-      html: `<p>Click <a href="https://client-login-and-signup.vercel.app/resetPassword/${token}">here</a> to reset your password.</p>`
-      //text:`https://client-login-and-signup.vercel.app/resetPassword/${encodeURIComponent(token)}`
+      html: `<p>Click <a href="${resetURL}">here</a> to reset your password.</p>`
     };
-    
-    transporter.sendMail(mailOptions, function(error, info){
+
+    transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
-        return res.json({message:"error sending mail",error:error})
+        console.error('Error sending email:', error);
+        return res.json({ message: "Error sending mail", error: error });
       } else {
-        console.log('Email sent:'+info.response)
-        return res.json({status:true,message:"email sent"})
+        console.log('Email sent:', info.response);
+        return res.json({ status: true, message: "Email sent" });
       }
     });
 
-  }catch(err){
-    console.log(err)
+  } catch (err) {
+    console.error('Error processing forgot-password request:', err);
+    return res.json({ message: "Internal server error", error: err });
   }
-})
+});
+
 
 //Reset Password
 router.post('/reset-password/:token',async (req,res)=>{
