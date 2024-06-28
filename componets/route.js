@@ -66,20 +66,20 @@ router.post('/forgot-password', async (req, res) => {
   try {
     const user = await UserModel.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: "User not registered" });
+      return res.json({ message: "User not registered" });
     }
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "30m" });
+    const token = jwt.sign({ id: user._id }, process.env.KEY, { expiresIn: "5m" });
 
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: process.env.EMAIL, // Replace with your email address (use environment variables)
-        pass: process.env.EMAIL_PASSWORD, // Replace with your email password (use environment variables)
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD
       }
     });
 
     const mailOptions = {
-      from: process.env.EMAIL, // Replace with your email address (use environment variables)
+      from: process.env.EMAIL,
       to: email,
       subject: 'Reset Password',
       text: `https://client-login-and-signup.onrender.com/resetPassword/${token}`
@@ -88,17 +88,18 @@ router.post('/forgot-password', async (req, res) => {
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
         console.error('Error sending mail:', error);
-        return res.status(500).json({ message: "Error sending mail" });
+        return res.json({ message: "Error sending mail", error: error });
       } else {
         console.log('Email sent: ' + info.response);
-        return res.status(200).json({ message: "Email sent" });
+        return res.json({ status: true, message: "Email sent" });
       }
     });
   } catch (err) {
     console.error('Error:', err);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error", error: err });
   }
 });
+
 // Reset Password
 router.post('/resetPassword/:token', async (req, res) => {
   const { token } = req.params;
