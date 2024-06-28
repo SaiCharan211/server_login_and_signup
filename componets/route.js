@@ -69,40 +69,39 @@ router.post('/forgot-password', async (req, res) => {
     if (!user) {
       return res.json({ message: "User not registered" });
     }
-
     const token = jwt.sign({ id: user._id }, process.env.KEY, { expiresIn: "5m" });
+    console.log(`Generated token: ${token}`);
 
-    const transporter = nodemailer.createTransport({
+    var transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: process.env.EMAIL, // Replace with your email
-        pass: process.env.EMAIL_PASSWORD // Replace with your app password
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD
       }
     });
 
-    const resetURL = `https://client-login-and-signup.vercel.app/resetPassword/${encodeURIComponent(token)}`;
-    const mailOptions = {
-      from:process.env.EMAIL,
+    var mailOptions = {
+      from: process.env.EMAIL,
       to: email,
       subject: 'Reset Password',
-      html: `<p>Click <a href="${resetURL}">here</a> to reset your password.</p>`
+      text: `https://client-login-and-signup.vercel.app/resetPassword/${token}`
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
-        console.error('Error sending email:', error);
+        console.error('Error sending mail:', error);
         return res.json({ message: "Error sending mail", error: error });
       } else {
-        console.log('Email sent:', info.response);
+        console.log('Email sent: ' + info.response);
         return res.json({ status: true, message: "Email sent" });
       }
     });
-
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Internal server error", error: error });
+  } catch (err) {
+    console.error('Error:', err);
+    return res.status(500).json({ message: "Internal server error", error: err });
   }
 });
+
 
 // Reset Password
 router.post('/reset-password/:token', async (req, res) => {
