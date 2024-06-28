@@ -75,14 +75,14 @@ router.post('/forgot-password', async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: 'your-email@gmail.com', // Replace with your email
-        pass: 'your-app-password' // Replace with your app password
+        user: process.env.EMAIL, // Replace with your email
+        pass: process.env.EMAIL_PASSWORD // Replace with your app password
       }
     });
 
     const resetURL = `https://client-login-and-signup.vercel.app/resetPassword/${encodeURIComponent(token)}`;
     const mailOptions = {
-      from: 'your-email@gmail.com',
+      from:process.env.EMAIL,
       to: email,
       subject: 'Reset Password',
       html: `<p>Click <a href="${resetURL}">here</a> to reset your password.</p>`
