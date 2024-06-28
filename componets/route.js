@@ -104,26 +104,27 @@ router.post('/forgot-password', async (req, res) => {
 
 
 // Reset Password
-router.post('/reset-password/:token', async (req, res) => {
+// Example backend route using Express
+router.post('/resetPassword/:token', async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
-  console.log(`Received reset-password request with token: ${token}`);
 
   try {
     const decoded = jwt.verify(token, process.env.KEY);
-    console.log(`Token decoded successfully: ${JSON.stringify(decoded)}`);
     const id = decoded.id;
 
-    const hashPassword = await bcrypt.hash(password, 10);
-    console.log(`Password hashed successfully`);
-    const newUserdata = await UserModel.findByIdAndUpdate(id, { password: hashPassword }, { new: true });
+    // Update user's password in the database
+    // Example using MongoDB and Mongoose
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const updatedUser = await UserModel.findByIdAndUpdate(id, { password: hashedPassword }, { new: true });
 
-    return res.json({ status: true, message: "Password updated successfully", user: newUserdata });
+    return res.json({ status: true, message: "Password updated successfully", user: updatedUser });
   } catch (error) {
-    console.error('Error during password reset:', error);
-    return res.status(500).json({ message: "Internal server error", error: error });
+    console.error('Error resetting password:', error);
+    return res.status(500).json({ status: false, message: 'Error resetting password', error: error.message });
   }
 });
+
 
 
 // Verify User Middleware
