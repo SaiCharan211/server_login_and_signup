@@ -107,11 +107,11 @@ router.post('/forgot-password', async (req, res) => {
 router.post('/reset-password/:token', async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
-  console.log(`Received request to reset password with token: ${token}`);
+  console.log(`Received reset-password request with token: ${token}`);
 
   try {
     const decoded = jwt.verify(token, process.env.KEY);
-    console.log(`Token decoded successfully: ${decoded}`);
+    console.log(`Token decoded successfully: ${JSON.stringify(decoded)}`);
     const id = decoded.id;
 
     const hashPassword = await bcrypt.hash(password, 10);
