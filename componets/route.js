@@ -84,7 +84,7 @@ router.post('/forgot-password', async (req, res) => {
       from: process.env.EMAIL,
       to: email,
       subject: 'Reset Password',
-      text: `https://client-login-and-signup.vercel.app/resetPassword/${token}`
+      text: `https://client-login-and-signup.onrender.com/resetPassword/${token}`
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
