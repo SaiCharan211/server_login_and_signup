@@ -10,7 +10,7 @@ import { UserRouter } from './componets/route.js';
 const app=express()
 app.use(express.json())
 app.use(cors({
-    origin: 'https://client-login-and-signup.onrender.com',
+    origin: ' http://localhost:5173/',
     credentials: true,
 }))
 app.use(cookieParser())
