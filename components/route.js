@@ -1,8 +1,8 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
-import UserModel from '../components/model.js'; // Corrected the path to 'components'
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
+import UserModel from './model'
 
 const router = express.Router();
 

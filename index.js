@@ -3,9 +3,9 @@ import dotenv from 'dotenv'
 import mongoose from 'mongoose';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import {UserRouter} from './components/route'
 
 dotenv.config() 
-import { UserRouter } from './componets/route.js';
 
 const app=express()
 app.use(express.json())
