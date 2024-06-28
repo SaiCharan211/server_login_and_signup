@@ -1,10 +1,10 @@
 import express from 'express'
-import bcryt from 'bcrypt'
+import bcrypt from 'bcrypt'
 import UserModel from '../componets/model.js'
-
-const router =express.Router()
 import jwt from "jsonwebtoken"
 import nodemailer  from 'nodemailer'
+
+const router = express.Router();
 
 // Register User
 router.post('/', async (req, res) => {
@@ -29,7 +29,7 @@ router.post('/', async (req, res) => {
     await newUser.save();
     return res.json({ status: true, message: "Record registered" });
   } catch (error) {
-    console.error('Error during user registration:', error);
+    console.error(error);
     return res.status(500).json({ status: false, message: "Internal server error" });
   }
 });
@@ -56,7 +56,7 @@ router.post('/login', async (req, res) => {
     res.cookie('token', token, { httpOnly: true, maxAge: 2592000000 });
     return res.json({ status: true, message: "Login successful" });
   } catch (error) {
-    console.error('Error during user login:', error);
+    console.error(error);
     return res.status(500).json({ status: false, message: "Internal server error" });
   }
 });
@@ -99,7 +99,7 @@ router.post('/forgot-password', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error during forgot-password request:', error);
+    console.error(error);
     return res.status(500).json({ message: "Internal server error", error: error });
   }
 });
@@ -118,7 +118,7 @@ router.post('/reset-password/:token', async (req, res) => {
 
     return res.json({ status: true, message: "Password updated successfully", user: newUserdata });
   } catch (error) {
-    console.error('Error during password reset:', error);
+    console.error(error);
     return res.status(500).json({ message: "Internal server error", error: error });
   }
 });
@@ -134,7 +134,7 @@ const verifyUser = async (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
-    console.error('Error verifying user:', error);
+    console.error(error);
     return res.status(500).json({ message: "Internal server error", error: error });
   }
 };
@@ -154,7 +154,7 @@ router.get('/', async (req, res) => {
     const data = await UserModel.find();
     res.json(data);
   } catch (error) {
-    console.error('Error fetching users:', error);
+    console.error(error);
     res.status(500).send(error);
   }
 });
