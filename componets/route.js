@@ -84,7 +84,7 @@ router.post('/forgot-password', async (req, res) => {
       subject: 'Reset Password',
       text: `https://client-login-and-signup.onrender.com/resetPassword/${token}`
     };
-z
+
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
         console.error('Error sending mail:', error);
