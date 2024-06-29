@@ -127,20 +127,28 @@ router.post('/verify-otp', (req, res) => {
 
 // Reset Password
 router.post('/resetPassword', async (req, res) => {
-  const { token } = req.params;
-  const { password } = req.body;
+  const { email, otp, newPassword } = req.body;
 
   try {
-    const decoded = jwt.verify(token, process.env.KEY);
-    const id = decoded.id;
+    // Validate OTP
+    if (!validateOTP(email, otp)) {
+      return res.status(400).json({ status: false, message: 'Invalid OTP' });
+    }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const updatedUser = await UserModel.findByIdAndUpdate(id, { password: hashedPassword }, { new: true });
+    // Reset password
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ status: false, message: 'User not found' });
+    }
 
-    return res.json({ status: true, message: "Password updated successfully", user: updatedUser });
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    return res.json({ status: true, message: 'Password reset successfully' });
   } catch (error) {
     console.error('Error resetting password:', error);
-    return res.status(500).json({ status: false, message: 'Error resetting password', error: error.message });
+    return res.status(500).json({ status: false, message: 'Internal server error', error: error.message });
   }
 });
 
