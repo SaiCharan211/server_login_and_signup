@@ -127,7 +127,7 @@ router.post('/verify-otp', (req, res) => {
 
 // Reset Password
 
-router.post('/resetPassword', async (req, res) => {
+router.post('/reset-password', async (req, res) => {
   const { token } = req.body;
   const { newPassword } = req.body;
 
