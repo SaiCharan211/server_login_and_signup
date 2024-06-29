@@ -11,7 +11,7 @@ const app=express()
 app.use(express.json())
 app.use(cors(
     {
-        origin:["https://client-login-and-signup.onrender.com","http://localhost:5174"],
+        origin:["https://client-login-and-signup.onrender.com"],
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
         allowedHeaders: ['Content-Type'],
         credentials:true
