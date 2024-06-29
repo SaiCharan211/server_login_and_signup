@@ -61,47 +61,72 @@ router.post('/login', async (req, res) => {
 });
 
 // Forgot Password
+const otps = {};
+
 router.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
-  try {
-    const user = await UserModel.findOne({ email });
-    if (!user) {
-      return res.json({ message: "User not registered" });
+  if (!email) {
+    return res.status(400).json({ message: 'Email is required' });
+  }
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString(); // Generate a 6-digit OTP
+
+  // Store OTP with expiration
+  otps[email] = {
+    otp,
+    expires: Date.now() + 300000 // OTP valid for 5 minutes
+  };
+
+  // Setup nodemailer
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.EMAIL_PASSWORD
     }
-    const token = jwt.sign({ id: user._id }, process.env.KEY, { expiresIn: "5m" });
+  });
 
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL,
-        pass: process.env.EMAIL_PASSWORD
-      }
-    });
+  const mailOptions = {
+    from: process.env.EMAIL,
+    to: email,
+    subject: 'Your OTP Code',
+    text: `Your OTP code is ${otp}`
+  };
 
-    const mailOptions = {
-      from: process.env.EMAIL,
-      to: email,
-      subject: 'Reset Password',
-      text: `https://client-login-and-signup.onrender.com/resetPassword/${token}`
-    };
-
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        console.error('Error sending mail:', error);
-        return res.json({ message: "Error sending mail", error: error });
-      } else {
-        console.log('Email sent: ' + info.response);
-        return res.json({ status: true, message: "Email sent" });
-      }
-    });
-  } catch (err) {
-    console.error('Error:', err);
-    return res.status(500).json({ message: "Internal server error", error: err });
+  try {
+    await transporter.sendMail(mailOptions);
+    res.json({ message: 'OTP sent' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error sending OTP', error: error.toString() });
   }
 });
 
+// Verify OTP
+router.post('/verify-otp', (req, res) => {
+  const { email, otp } = req.body;
+  if (!email || !otp) {
+    return res.status(400).json({ message: 'Email and OTP are required' });
+  }
+
+  const storedOtp = otps[email];
+  if (!storedOtp) {
+    return res.status(400).json({ message: 'OTP not found' });
+  }
+
+  if (Date.now() > storedOtp.expires) {
+    return res.status(400).json({ message: 'OTP expired' });
+  }
+
+  if (storedOtp.otp !== otp) {
+    return res.status(400).json({ message: 'Invalid OTP' });
+  }
+
+  delete otps[email]; // Clear the OTP after successful verification
+  res.json({ message: 'OTP verified' });
+});
+
 // Reset Password
-router.post('/resetPassword/:token', async (req, res) => {
+router.post('/resetPassword', async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
 
