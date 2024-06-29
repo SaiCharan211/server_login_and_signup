@@ -126,31 +126,33 @@ router.post('/verify-otp', (req, res) => {
 });
 
 // Reset Password
+
 router.post('/resetPassword', async (req, res) => {
-  const { email, otp, newPassword } = req.body;
+  const { token } = req.body;
+  const { newPassword } = req.body;
 
   try {
-    // Validate OTP
-    if (!validateOTP(email, otp)) {
-      return res.status(400).json({ status: false, message: 'Invalid OTP' });
-    }
+    // Verify and decode the token
+    const decoded = jwt.verify(token, process.env.KEY);
+    const id = decoded.id;
 
-    // Reset password
-    const user = await UserModel.findOne({ email });
-    if (!user) {
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update user's password in the database
+    const updatedUser = await UserModel.findByIdAndUpdate(id, { password: hashedPassword }, { new: true });
+
+    if (!updatedUser) {
       return res.status(404).json({ status: false, message: 'User not found' });
     }
 
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashedPassword;
-    await user.save();
-
-    return res.json({ status: true, message: 'Password reset successfully' });
+    return res.json({ status: true, message: 'Password updated successfully', user: updatedUser });
   } catch (error) {
     console.error('Error resetting password:', error);
     return res.status(500).json({ status: false, message: 'Internal server error', error: error.message });
   }
 });
+
 
 // Verify User Middleware
 const verifyUser = async (req, res, next) => {
